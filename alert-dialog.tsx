@@ -1,0 +1,59 @@
+import { Link } from "react-router-dom";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Article } from "@/data/articles";
+import { getTagColor } from "@/lib/utils";
+
+interface ArticleCardProps {
+  article: Article;
+}
+
+export function ArticleCard({ article }: ArticleCardProps) {
+  return (
+    <Link to={`/article/${article.id}`} className="block p-4">
+      <Card className="h-full overflow-hidden border shadow-sm rounded-2xl transition-shadow hover:shadow-md">
+        <div className="aspect-video overflow-hidden bg-muted rounded-t-lg">
+          <img
+            src={article.thumbnail}
+            alt={article.title}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <CardHeader className="space-y-2 p-6">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-sm text-muted-foreground font-details">
+              {new Date(article.date).toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: 'numeric'
+              })} • <span style={{ color: '#1b96c0' }}>{article.author}</span>
+            </p>
+            {article.tags && article.tags.map((tag, index) => {
+              const colors = getTagColor(tag);
+              return (
+                <Badge 
+                  key={index} 
+                  className="text-xs border-0"
+                  style={{ 
+                    backgroundColor: colors.bg, 
+                    color: colors.text 
+                  }}
+                >
+                  {tag}
+                </Badge>
+              );
+            })}
+            {article.badges && article.badges.map((badge, index) => (
+              <Badge key={index} className={`${badge.color} text-white border-0`}>
+                {badge.text}
+              </Badge>
+            ))}
+          </div>
+          <h3 className="text-xl font-semibold leading-tight font-title">
+            {article.title}
+          </h3>
+        </CardHeader>
+      </Card>
+    </Link>
+  );
+}
